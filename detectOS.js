@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
   } else if (/iPhone|iPad|iPod/.test(userAgent)) {
     loadCSS('ios.css');
   } else if (/Windows/.test(userAgent)) {
-    loadCSS('ios.css');
+    loadCSS('fluent.css');
 
     loadScriptModule('fluent-init.js', () => {
       document.getElementById('default-user-prompt').style.display = 'none';
