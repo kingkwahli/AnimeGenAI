@@ -1,6 +1,6 @@
-const apiKey = "myAPI";
+const apiKey = "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";
 
-const maxImages = 4; // Number of images to generate for each prompt
+const maxImages = 4;
 let selectedImageNumber = null;
 
 function getRandomNumber(min, max) {
@@ -37,38 +37,41 @@ async function generateImages(input) {
         const randomNumber = getRandomNumber(1, 10000);
         const prompt = `${input} ${randomNumber}`;
 
-        const response = await fetch(
-            "https://api-inference.huggingface.co/models/Linaqruf/anything-v3-1",
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${apiKey}`,
-                },
-                body: JSON.stringify({ inputs: prompt }),
+        try {
+            const response = await fetch(
+                "https://api-inference.huggingface.co/models/Linaqruf/anything-v3-1",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${apiKey}`,
+                    },
+                    body: JSON.stringify({ inputs: prompt }),
+                }
+            );
+
+            if (!response.ok) {
+                alert("Failed to generate image:", response.statusText);
+                continue;
             }
-        );
 
-        if (!response.ok) {
-            alert("Failed to generate images.");
-            continue;
+            const blob = await response.blob();
+            const imgUrl = URL.createObjectURL(blob);
+
+            const img = document.createElement("img");
+            img.src = imgUrl;
+            img.alt = `art-${i + 1}`;
+            img.onclick = () => downloadImage(imgUrl, i);
+            document.getElementById("image-grid").appendChild(img);
+        } catch (error) {
+            alert("Error during image generation:", error);
         }
-
-        const blob = await response.blob();
-        const imgUrl = URL.createObjectURL(blob);
-
-        const img = document.createElement("img");
-        img.src = imgUrl;
-        img.alt = `art-${i + 1}`;
-        img.onclick = () => downloadImage(imgUrl, i);
-        document.getElementById("image-grid").appendChild(img);
     }
 
     loading.style.display = "none";
     enableGenerateButton();
-
-    selectedImageNumber = null;
 }
+
 
 document.addEventListener('click', (event) => {
   if (event.target && (event.target.id === 'default-generate' || event.target.id === 'fluent-generate')) {
@@ -84,4 +87,6 @@ function downloadImage(imgUrl, imageNumber) {
     link.href = imgUrl;
     link.download = `image-${imageNumber + 1}.jpg`;
     link.click();
+
+setTimeout(() => URL.revokeObjectURL(imgUrl), 1000);
 }
