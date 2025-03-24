@@ -1,43 +1,31 @@
-<!-- Author: Huzefa Huzbi -->
+<!-- Originally designed  by @Huzbi-crypto on GitHub, redesigned by @kingkwahli-->
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-    <title>AI Anime Art | Huzbi Project</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AnimeGen AI</title>
+  <link id="theme-stylesheet" rel="stylesheet" href="default.css">
+  <script src="detectOS.js"></script>
 </head>
-
 <body>
-
     <div class="container">
-        <h1>Huzbi AI Anime Art Generator</h1>
-        <p>Write your prompt here to generate images with power 
-            of Ai, For example : "1girl, animal ears, long hair, 
-            solo, cat ears, choker, bare shoulders, red eyes, 
-            fang, looking at viewer, animal ear fluff, upper body, 
-            black hair, blush, closed mouth, off shoulder, bangs, 
-            bow, collarbone". Please be patient as sometimes fetching resources could
-            take time or fail.</p>
-        <form class="gen-form">
-            <input type="text" id="user-prompt" , placeholder="Type your prompt here..." autocomplete="off">
-            <button type="button" id="generate">Generate</button>
-        </form>
-
+        <h1>AnimeGen AI</h1>
+        <h2>Generate Anime-style images with HF AI</h2>
+	<p>Please note that retrieving resources may take time or occasionally fail.</p>
+        <form class="prompt">
+  <input type="text" id="default-user-prompt" placeholder="What will you create?">
+  <button id="default-generate">Generate</button>
+  <fluent-text-field style="display:none;" appearance="outline" id="fluent-user-prompt" placeholder="What will you create?"></fluent-text-field>
+  <fluent-button style="display:none;" appearance="accent" id="fluent-generate">Generate</fluent-button>
+</form>
         <div class="result">
             <div id="loading">Generating...</div>
             <div id="image-grid"></div>
         </div>
-
     </div>
-
     <footer>
-        <p>Created by Huzbi.</p>
-        <a class="source-code" href="#">Source Code</a>
     </footer>
-
     <script src="script.js"></script>
 </body>
-
 </html>
