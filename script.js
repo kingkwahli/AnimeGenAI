@@ -1,30 +1,31 @@
-const apiKey = "YOUR_HUGGINGFACE_PUBLIC_API_KEY";
+const apiKey = "myAPI";
 
 const maxImages = 4; // Number of images to generate for each prompt
 let selectedImageNumber = null;
 
-// Function to generate a random number between min and max (inclusive)
 function getRandomNumber(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-// Function to disable the generate button during processing
 function disableGenerateButton() {
-    document.getElementById("generate").disabled = true;
+    const defaultBtn = document.getElementById("default-generate");
+    const fluentBtn = document.getElementById("fluent-generate");
+    if (defaultBtn) defaultBtn.disabled = true;
+    if (fluentBtn) fluentBtn.disabled = true;
 }
 
-// Function to enable the generate button after process
 function enableGenerateButton() {
-    document.getElementById("generate").disabled = false;
+    const defaultBtn = document.getElementById("default-generate");
+    const fluentBtn = document.getElementById("fluent-generate");
+    if (defaultBtn) defaultBtn.disabled = false;
+    if (fluentBtn) fluentBtn.disabled = false;
 }
 
-// Function to clear image grid
 function clearImageGrid() {
     const imageGrid = document.getElementById("image-grid");
     imageGrid.innerHTML = "";
 }
 
-// Function to generate images
 async function generateImages(input) {
     disableGenerateButton();
     clearImageGrid();
@@ -32,15 +33,12 @@ async function generateImages(input) {
     const loading = document.getElementById("loading");
     loading.style.display = "block";
 
-    const imageUrls = [];
-
     for (let i = 0; i < maxImages; i++) {
-        // Generate a random number between 1 and 10000 and append it to the prompt
         const randomNumber = getRandomNumber(1, 10000);
         const prompt = `${input} ${randomNumber}`;
-        // We added random number to prompt to create different results
+
         const response = await fetch(
-            "https://api-inference.huggingface.co/models/Linaqruf/anything-v3.0",
+            "https://api-inference.huggingface.co/models/Linaqruf/anything-v3-1",
             {
                 method: "POST",
                 headers: {
@@ -52,12 +50,12 @@ async function generateImages(input) {
         );
 
         if (!response.ok) {
-            alert("Failed to generate image!");
+            alert("Failed to generate images.");
+            continue;
         }
 
         const blob = await response.blob();
         const imgUrl = URL.createObjectURL(blob);
-        imageUrls.push(imgUrl);
 
         const img = document.createElement("img");
         img.src = imgUrl;
@@ -69,18 +67,21 @@ async function generateImages(input) {
     loading.style.display = "none";
     enableGenerateButton();
 
-    selectedImageNumber = null; // Reset selected image number
+    selectedImageNumber = null;
 }
 
-document.getElementById("generate").addEventListener('click', () => {
-    const input = document.getElementById("user-prompt").value;
+document.addEventListener('click', (event) => {
+  if (event.target && (event.target.id === 'default-generate' || event.target.id === 'fluent-generate')) {
+    const inputElement = document.getElementById(event.target.id === 'default-generate' ? "default-user-prompt" : "fluent-user-prompt");
+    const input = inputElement.value;
     generateImages(input);
+  }
 });
+
 
 function downloadImage(imgUrl, imageNumber) {
     const link = document.createElement("a");
     link.href = imgUrl;
-    // Set filename based on the selected image
     link.download = `image-${imageNumber + 1}.jpg`;
     link.click();
 }
